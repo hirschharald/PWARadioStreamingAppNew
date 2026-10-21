@@ -33,6 +33,11 @@
   gap: 1rem;
 }
 
+.station-item:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
 .station-logo-container {
   flex-shrink: 0;
 }
@@ -52,6 +57,29 @@
   font-size: 1.125rem;
   font-weight: 500;
   color: var(--text-color, #333333);
+  flex: 1;
+  text-align: left;
+}
+
+.favorite-toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.favorite-toggle[aria-pressed="true"] {
+  color: var(--warning-color, #d98b00);
+}
+
+.favorite-toggle:hover {
+  background: var(--hover-color);
 }
 
 @media (prefers-color-scheme: dark) {

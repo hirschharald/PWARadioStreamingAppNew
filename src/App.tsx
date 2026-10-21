@@ -3,6 +3,7 @@ import './App.css'
 import TabContainer from './components/TabContainer'
 import type { TabData } from './components/TabContainer'
 import SenderList from './components/SenderList'
+import FavoriteStations from './components/FavoriteStations'
 
 
 import Settings from './components/Settings'
@@ -25,6 +26,24 @@ function App() {
   
   const [selectedUrl] = useRecoilState(selectedMpdUrlState);
   const [stations, setStations] = useState<RadioStation[]>([]);
+  const [favoriteNames, setFavoriteNames] = useState<string[]>(() => {
+    try {
+      const savedFavorites: unknown = JSON.parse(localStorage.getItem('favoriteStations') || '[]');
+      return Array.isArray(savedFavorites)
+        ? savedFavorites.filter((name): name is string => typeof name === 'string')
+        : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleFavorite = (stationName: string) => {
+    setFavoriteNames((currentFavorites) =>
+      currentFavorites.includes(stationName)
+        ? currentFavorites.filter((name) => name !== stationName)
+        : [...currentFavorites, stationName]
+    );
+  };
   
   useEffect(() => {
     console.log('App selectedUrl:', selectedUrl);
@@ -97,6 +116,10 @@ function App() {
     localStorage.setItem('activeTab', activeTabId)
   }, [activeTabId])
 
+  useEffect(() => {
+    localStorage.setItem('favoriteStations', JSON.stringify(favoriteNames))
+  }, [favoriteNames])
+
   const updateApp = () => {
     // Eine benutzerdefinierte Funktion, die den Service Worker aktualisiert
     window.location.reload()
@@ -107,7 +130,25 @@ function App() {
     {
       id: 'sender',
       label: 'Sender',
-      content: <SenderList stations={stations} />,
+      content: (
+        <SenderList
+          stations={stations}
+          favoriteNames={favoriteNames}
+          onToggleFavorite={toggleFavorite}
+        />
+      ),
+    },
+    {
+      id: 'favorites',
+      label: 'Favoriten',
+      icon: 'star',
+      content: (
+        <FavoriteStations
+          stations={stations}
+          favoriteNames={favoriteNames}
+          onToggleFavorite={toggleFavorite}
+        />
+      ),
     },
     {
       id: 'player',

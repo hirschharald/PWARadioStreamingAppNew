@@ -6,10 +6,12 @@ import type { RadioStation } from "../types/types";
 
 interface SenderProps {
   stations: RadioStation[];
+  favoriteNames: string[];
+  onToggleFavorite: (stationName: string) => void;
 }
 
 const SenderList: React.FC<SenderProps> = (props) => {
-  const { stations } = props;
+  const { stations, favoriteNames, onToggleFavorite } = props;
   const [selectedStation, setSelectedStation] = useState<RadioStation | undefined>(undefined);
   
   console.log("Stations: ", stations);
@@ -30,7 +32,12 @@ const SenderList: React.FC<SenderProps> = (props) => {
       {selectedStation ? (
         <StreamList station={selectedStation} onBack={handleBackToStations} />
       ) : (
-        <StationList stations={stations} onStationSelect={handleStationSelect} />
+        <StationList
+          stations={stations}
+          favoriteNames={favoriteNames}
+          onStationSelect={handleStationSelect}
+          onToggleFavorite={onToggleFavorite}
+        />
       )}
     </div>
   );
